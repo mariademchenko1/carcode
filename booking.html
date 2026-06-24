@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Записаться на ремонт | CarCode</title>
+  <link href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.19/index.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@fontsource/raleway@5.0.19/index.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-card: #13131a;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-glow: rgba(59, 130, 246, 0.3);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --font-heading: 'Raleway', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --border-subtle: rgba(255, 255, 255, 0.06);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+    .btn-primary,
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: var(--accent);
+      color: #fff;
+      font: 600 0.95rem var(--font-body);
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-primary:hover,
+    .btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px var(--accent-glow);
+    }
+
+    header {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 1000;
+      background: rgba(10, 10, 15, 0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    nav {
+      max-width: 1200px;
+      height: 72px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo-link { display: flex; align-items: center; }
+    .logo-img { height: 40px; width: auto; object-fit: contain; }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+    .nav-links a:hover,
+    .nav-links a.active { color: #fff; }
+
+    .booking-section {
+      min-height: 100vh;
+      padding: 128px 0 72px;
+      background:
+        linear-gradient(rgba(10, 10, 15, 0.86), rgba(10, 10, 15, 0.96)),
+        url("https://image.qwenlm.ai/public_source/b2131477-915a-4267-9931-3fe73d42285e/173d8835c-aba0-451f-83bb-af1821ccbf49.png") center/cover no-repeat;
+    }
+    .booking-section h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1.75rem;
+    }
+    #bookingForm {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+    }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.4rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-dark);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      color: var(--text-main);
+      font: 0.95rem var(--font-body);
+      transition: var(--transition);
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .form-group textarea { resize: vertical; }
+    .captcha {
+      padding: 1rem;
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid rgba(59, 130, 246, 0.18);
+      border-radius: 10px;
+    }
+    #captchaQuestion {
+      margin-bottom: 0.75rem;
+      color: var(--text-main);
+      font-weight: 600;
+    }
+    #bookingResult {
+      margin-top: 1rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    #bookingResult.success { color: #4ade80; }
+    #bookingResult.error { color: #f87171; }
+
+    footer {
+      padding: 2rem 0;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-subtle);
+      color: var(--text-dim);
+      text-align: center;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 720px) {
+      .nav-links { gap: 1rem; }
+      .nav-links a:not(.btn) { display: none; }
+      .logo-img { height: 32px; }
+      #bookingForm { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="index.html" class="logo-link">
+        <img src="https://image.qwenlm.ai/public_source/b2131477-915a-4267-9931-3fe73d42285e/16c17bbdd-d2ae-4312-a008-29e6cc439eb0.png" alt="CarCode" class="logo-img">
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html#services">Услуги</a></li>
+        <li><a href="index.html#about">О нас</a></li>
+        <li><a href="index.html#reviews">Отзывы</a></li>
+        <li><a href="booking.html" class="btn active" style="padding: 10px 24px; font-size: 0.85rem;">Записаться</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="booking-section">
+      <div class="container">
+        <h1>Записаться на ремонт</h1>
+        <form id="bookingForm">
+          <div class="form-group">
+            <label for="service">Услуга *</label>
+            <select id="service" required>
+              <option value="">Выберите услугу</option>
+              <option value="1">Замена масла</option>
+              <option value="2">Диагностика ходовой</option>
+              <option value="3">Шиномонтаж</option>
+              <option value="4">Ремонт тормозов</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="date">Дата *</label>
+            <input type="date" id="date" required>
+          </div>
+          <div class="form-group">
+            <label for="time">Время *</label>
+            <select id="time" required>
+              <option value="">Выберите время</option>
+              <option value="09:00">09:00</option>
+              <option value="10:00">10:00</option>
+              <option value="11:00">11:00</option>
+              <option value="12:00">12:00</option>
+              <option value="13:00">13:00</option>
+              <option value="14:00">14:00</option>
+              <option value="15:00">15:00</option>
+              <option value="16:00">16:00</option>
+              <option value="17:00">17:00</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="name">Ваше имя *</label>
+            <input type="text" id="name" placeholder="Иван Иванов" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Телефон *</label>
+            <input type="tel" id="phone" placeholder="+7 (999) 123-45-67" required>
+          </div>
+          <div class="form-group">
+            <label for="plate">Госномер автомобиля</label>
+            <input type="text" id="plate" placeholder="A123BC 77">
+          </div>
+          <div class="form-group">
+            <label for="comment">Комментарий</label>
+            <textarea id="comment" rows="3" placeholder="Опишите проблему..."></textarea>
+          </div>
+          <div class="form-group captcha">
+            <label>Подтвердите, что вы не робот</label>
+            <div id="captchaQuestion">Сколько будет 5 + 3?</div>
+            <input type="text" id="captchaAnswer" placeholder="Введите ответ" required>
+          </div>
+          <button type="submit" class="btn-primary">Отправить заявку</button>
+        </form>
+        <div id="bookingResult"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 CarCode. Все права защищены.</p>
+    </div>
+  </footer>
+
+  <script src="js/booking.js"></script>
+</body>
+</html>

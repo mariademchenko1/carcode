@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Админ-панель | CarCode</title>
+  <link href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.19/index.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@fontsource/raleway@5.0.19/index.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-card: #13131a;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --font-heading: 'Raleway', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(10, 10, 15, 0.94);
+      border-bottom: 1px solid var(--border-subtle);
+      backdrop-filter: blur(16px);
+    }
+    .admin-nav {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .logo {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+    .logo span {
+      display: block;
+      color: var(--text-muted);
+      font: 500 0.8rem var(--font-body);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .nav-link {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      transition: color 0.2s ease;
+    }
+    .nav-link:hover { color: #fff; }
+
+    .admin-section { padding: 56px 0 80px; }
+    .page-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    h1, h2 {
+      font-family: var(--font-heading);
+      line-height: 1.2;
+    }
+    h1 { font-size: clamp(2rem, 4vw, 3rem); }
+    h2 { font-size: 1.35rem; margin-bottom: 1rem; }
+    .muted { color: var(--text-muted); }
+
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 2rem;
+    }
+    .login-panel {
+      max-width: 440px;
+    }
+    .form-field { margin-bottom: 1rem; }
+    label {
+      display: block;
+      margin-bottom: 0.4rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      outline: none;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    }
+    .btn-primary,
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 18px;
+      border: 0;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .btn-primary { width: 100%; background: var(--accent); }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn-secondary {
+      width: auto;
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+    }
+    .btn-secondary:hover { color: #fff; border-color: rgba(255, 255, 255, 0.2); }
+    .error {
+      margin-top: 1rem;
+      color: #f87171;
+      font-weight: 600;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+    .stat-card span {
+      display: block;
+      color: var(--accent);
+      font: 800 1.8rem var(--font-heading);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+    }
+    .admin-table {
+      width: 100%;
+      min-width: 820px;
+      border-collapse: collapse;
+    }
+    .admin-table th,
+    .admin-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      text-align: left;
+      vertical-align: top;
+    }
+    .admin-table th {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .admin-table td { color: var(--text-main); }
+    .empty-state {
+      padding: 2rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .hidden { display: none !important; }
+
+    @media (max-width: 760px) {
+      .admin-nav, .page-header { align-items: flex-start; flex-direction: column; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .panel { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container admin-nav">
+      <div class="logo">
+        CarCode
+        <span>Админ-панель</span>
+      </div>
+      <div class="nav-actions">
+        <a href="index.html" class="nav-link">На сайт</a>
+        <button type="button" class="btn-secondary hidden" id="logoutBtn">Выйти</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-section">
+    <div class="container">
+      <div class="page-header">
+        <div>
+          <h1>Управление заявками</h1>
+          <p class="muted">Страница администрирования отделена от публичного сайта.</p>
+        </div>
+      </div>
+
+      <section class="panel login-panel" id="loginForm" aria-labelledby="loginTitle">
+        <h2 id="loginTitle">Вход в административную панель</h2>
+        <form id="adminLoginForm">
+          <div class="form-field">
+            <label for="adminLogin">Логин</label>
+            <input type="text" id="adminLogin" autocomplete="username" required>
+          </div>
+          <div class="form-field">
+            <label for="adminPassword">Пароль</label>
+            <input type="password" id="adminPassword" autocomplete="current-password" required>
+          </div>
+          <button type="submit" class="btn-primary">Войти</button>
+          <div id="adminError" class="error hidden"></div>
+        </form>
+      </section>
+
+      <section id="adminDashboard" class="hidden" aria-labelledby="dashboardTitle">
+        <div class="page-header">
+          <div>
+            <h2 id="dashboardTitle">Заявки на ремонт</h2>
+            <p class="muted">Данные должны загружаться из backend API и базы данных.</p>
+          </div>
+          <button type="button" class="btn-secondary" id="refreshBtn">Обновить</button>
+        </div>
+
+        <div class="stats" id="adminStats">
+          <div class="stat-card">Всего <span id="statTotal">0</span></div>
+          <div class="stat-card">Новые <span id="statNew">0</span></div>
+          <div class="stat-card">Подтверждены <span id="statConfirmed">0</span></div>
+          <div class="stat-card">Выполнены <span id="statCompleted">0</span></div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="admin-table" id="bookingsTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Клиент</th>
+                <th>Телефон</th>
+                <th>Услуга</th>
+                <th>Дата/время</th>
+                <th>Статус</th>
+                <th>Комментарий</th>
+              </tr>
+            </thead>
+            <tbody id="bookingsBody"></tbody>
+          </table>
+          <div class="empty-state" id="emptyState">Заявок пока нет. Подключите backend API, чтобы загружать реальные данные.</div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
